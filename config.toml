@@ -1,0 +1,9 @@
+appid="wx**********"
+appsecret="*********"
+
+[database]
+server = "postgres://postgres:postgres@localhost:5432/chat1?sslmode=disable"
+ports = [ 5432 ]
+connection_max = 5000
+enabled = true
+

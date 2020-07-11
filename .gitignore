@@ -1,0 +1,17 @@
+/lib/
+node_modules/
+/node_modules/
+json/
+/json/
+target/
+/target/
+/tmp/
+/temp/
+/data/
+tmp/*
+*.zip
+*.db
+*.lock
+/__pycache__/
+__pycache__/
+
