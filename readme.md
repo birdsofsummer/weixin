@@ -23,7 +23,7 @@ npm i -g serverless
 sls --debug
 ```
 
-## config.toml,修改config.pro.toml中数据库地址
+## config.toml复制为config.pro.toml,修改config.pro.toml中数据库地址
 ```bash 
 cp config.toml config.pro.toml
 
