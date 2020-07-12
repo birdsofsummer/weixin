@@ -12,6 +12,10 @@ tmp/*
 *.zip
 *.db
 *.lock
+.env
+config.pro.toml
+/.serverless/
+.serverless/
 /__pycache__/
 __pycache__/
 

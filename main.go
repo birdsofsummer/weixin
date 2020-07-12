@@ -1,17 +1,23 @@
 package main
 
 import (
+	"strings"
 	"fmt"
     "xorm.io/xorm"
+    "context"
+	//"encoding/json"
 	"time"
+	. "github.com/tencentyun/scf-go-lib/cloudevents/scf"
+    "github.com/tencentyun/scf-go-lib/cloudfunction"
 	"./token"
 	"./db"
 	"./config"
 	config1 "./types/config"
+	. "./scf"
 )
 
 var (
-	config_file="config.toml"
+	config_file="config.pro.toml"
 	Config *config1.AppConfig 
 	engine *xorm.EngineGroup 
 )
@@ -157,8 +163,38 @@ func test1(){
 	fmt.Println("token string",string(t))
 }
 
+func WeixinToken(ctx context.Context, event APIGatewayProxyRequest) (string,error) {
+	//s,_:=json.Marshal(event)
+	e,tk:=weixin_token()
+	if e!=nil {
+		fmt.Println("eeee",e)
+		return "",e
+	}
+	fmt.Println("zzz",tk)
+	t,_:=tk.Marshal()
+	body:=string(t)
+	fmt.Println("token string",body)
+	return body,nil
+}
+
+func app(ctx context.Context, event APIGatewayProxyRequest)(APIGatewayProxyResponse,error){
+    //test()
+    //test1()
+
+	r:=make(map[string]func(context.Context,APIGatewayProxyRequest) (string,error))
+	r["/"]=WeixinToken
+	fmt.Println(event)
+	p1:=event.RequestContext.Path
+	p2:=event.Path
+    p:=strings.Replace(p2, p1, "", -1 ) 
+    f, ok := r[p] 
+    if (!ok) {
+		f=Echo
+    }
+	return Format_res(f(ctx,event)),nil
+}
 
 func main(){
-    test()
-    //test1()
+	cloudfunction.Start(app)
 }
+

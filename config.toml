@@ -1,5 +1,6 @@
-appid="wx**********"
-appsecret="*********"
+appid="1111"
+appsecret="2222"
+
 
 [database]
 server = "postgres://postgres:postgres@localhost:5432/chat1?sslmode=disable"

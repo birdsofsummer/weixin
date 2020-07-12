@@ -29,7 +29,7 @@ func Conn(s string)(error, *xorm.EngineGroup){
     engine, err = xorm.NewEngineGroup("postgres", conns, xorm.RoundRobinPolicy())
 
 	if err != nil {
-		println(err.Error())
+		println("db connect fail",err.Error())
 		return err,engine
 	}
 	//engine.SetMapper(names.SameMapper{})
@@ -37,7 +37,7 @@ func Conn(s string)(error, *xorm.EngineGroup){
 	//engine.SetColumnMapper(names.SnakeMapper{})
 	err = engine.Sync2(new(Token))
 	if err!=nil{
-		println("eeee",err.Error())
+		println("db sync fail",err.Error())
 		return err,engine
 	}
 	return err,engine

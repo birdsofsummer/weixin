@@ -1,0 +1,21 @@
+name: wx-token-server
+postgresql:
+  component: '@serverless/tencent-postgresql'
+  # refer to: https://github.com/serverless-components/tencent-postgresql/blob/master/docs/configure.md
+  inputs:
+    region: ${env.REGION}
+    zone: ${env.ZONE}
+    dBInstanceName: serverless
+    extranetAccess: true
+    vpcConfig:
+      vpcId: ${vpc.vpcId}
+      subnetId: ${vpc.subnetId}
+
+vpc:
+  component: '@serverless/tencent-vpc'
+  # refer to: https://github.com/serverless-components/tencent-vpc/blob/master/docs/configure.md
+  inputs:
+    region: ${env.REGION}
+    zone: ${env.ZONE}
+    vpcName: serverlessVpc
+    subnetName: serverlessSubnet
