@@ -18,6 +18,9 @@ ZONE=ap-guangzhou-3
 
 ## [初始化数据库](https://cloud.tencent.com/document/product/583/45363) 得到connectionString
 
+
++ [数据库配置文档](https://github.com/serverless-components/tencent-postgresql/blob/master/docs/configure.md)
+
 ```bash
 npm i -g serverless
 sls --debug
