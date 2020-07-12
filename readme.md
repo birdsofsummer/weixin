@@ -23,9 +23,17 @@ npm i -g serverless
 sls --debug
 ```
 
-## 修改config.pro.toml
+## config.toml,修改config.pro.toml中数据库地址
+```bash 
+cp config.toml config.pro.toml
 
-connectionString + `?sslmode=disable`
+```
+
+```toml
+[database]
+server = "postgres://postgres:postgres@localhost:5432/chat1?sslmode=disable"
+```
+server改为上一步得到的connectionString + `?sslmode=disable`
 
 ## 打包
 
