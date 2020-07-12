@@ -1,6 +1,5 @@
-# 微信公众号token server
+# [微信公众号](https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html)token server
 
-+ [文档](https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html)
 + token有效期7200秒
 + 公众号需设置ip白名单
 
@@ -17,7 +16,7 @@ REGION=ap-guangzhou
 ZONE=ap-guangzhou-3
 ```
 
-## 初始化数据库 得到connectionString
+## [初始化数据库](https://cloud.tencent.com/document/product/583/45363) 得到connectionString
 
 ```bash
 npm i -g serverless
