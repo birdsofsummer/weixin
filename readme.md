@@ -51,7 +51,7 @@ ls /tmp/1.zip
 + 新建云函数,上传打包好的zip文件
 + 勾选固定ip出口,得到固定ip
 + apigateway触发/集成响应
-+ 复制固定ip,粘贴到微信公众号后台ip白名单
++ 复制固定ip,粘贴到[微信公众号后台](https://mp.weixin.qq.com/advanced/advanced?action=dev&t=advanced/dev)p白名单
 + 手机微信扫码确认
 
 
