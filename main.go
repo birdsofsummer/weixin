@@ -8,7 +8,7 @@ import (
 	//"encoding/json"
 	"time"
 	. "github.com/tencentyun/scf-go-lib/cloudevents/scf"
-    "github.com/tencentyun/scf-go-lib/cloudfunction"
+    //"github.com/tencentyun/scf-go-lib/cloudfunction"
 	"./token"
 	"./db"
 	"./config"
@@ -178,8 +178,6 @@ func WeixinToken(ctx context.Context, event APIGatewayProxyRequest) (string,erro
 }
 
 func app(ctx context.Context, event APIGatewayProxyRequest)(APIGatewayProxyResponse,error){
-    //test()
-    //test1()
 
 	r:=make(map[string]func(context.Context,APIGatewayProxyRequest) (string,error))
 	r["/"]=WeixinToken
@@ -196,5 +194,7 @@ func app(ctx context.Context, event APIGatewayProxyRequest)(APIGatewayProxyRespo
 
 func main(){
 	cloudfunction.Start(app)
+    test()
+    //test1()
 }
 

@@ -6,6 +6,8 @@ postgresql:
     region: ${env.REGION}
     zone: ${env.ZONE}
     dBInstanceName: serverless
+    dBVersion: 10.4
+    dBCharset: UTF8
     extranetAccess: true
     vpcConfig:
       vpcId: ${vpc.vpcId}
