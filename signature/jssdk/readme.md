@@ -1,4 +1,4 @@
-
+## doc
 
 +  [doc](https://developers.weixin.qq.com/doc/offiaccount/OA_Web_Apps/JS-SDK.html#2)
 +  [wiki](http://mp.weixin.qq.com/wiki/7/aaa137b55fb2e0456bf8dd9148dd613f.html)
@@ -6,6 +6,20 @@
 +  [demo](https://www.weixinsxy.com/jssdk/js/demo.js)
 +  [sample](http://demo.open.weixin.qq.com/jssdk/sample.zip)
 
+
+
+## import 
+
+```bash
+npm install weixin-js-sdk --save-dev
+
+```
+
+```javascript 
+
+import wx from 'weixin-js-sdk'
+
+```
 
 
 ```html
@@ -195,15 +209,16 @@ https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&typ
     const get_sig=(o={})=>sha1(qs.stringify(sort(o)))
 
     const o={
-      appId: 'wxf8b4f85f3a794e77', //...
       timestamp: 1594610458,       //
       nonceStr: 'zRjmHbYBHZ3kACxC',//
       jsapi_ticket:"sM4AOVdWfPE4DxkXGEs8VMCPGGVi4C3VM0P37wVUCFvkVAy_90u5h9nbSlYy3-Sl-HhTdfl2fzFy1AOcHKP7qg", //
+       url: 'http://example.com',
       //signature: 'bb3bef01a685b5c90e687679339421dbf15548b4', //
     }
     const o1={
           ...o,
           signature:get_sig(o),
+          appId: 'wxf8b4f85f3a794e77', //...
           debug: true, 
           jsApiList: [
                //...
