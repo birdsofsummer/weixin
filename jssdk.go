@@ -6,8 +6,10 @@ import (
 	"crypto/sha1"
 	//"crypto/hmac"
 	//"crypto/sha256"
-	"net/http"
+	//"net/http"
 	. "./http1"
+	"./types/ticket"
+	"io/ioutil"
 )
 
 func random(i int64) int{
@@ -44,7 +46,7 @@ func hamcsha1(secretKey string, source string) (string){
 }
 
 // hashlib.sha1(string).hexdigest()
-func sha1(){
+func _sha1(){
 
 
 
@@ -52,15 +54,16 @@ func sha1(){
 
 }
 
-
-
-func getJsApiTicket(accessToken string) (*http.Response,error){
+func getJsApiTicket(accessToken string) (ticket.TopLevel,error){
    u:="https://api.weixin.qq.com/cgi-bin/ticket/getticket"
    d:=map[string]interface{}{
 	   "type":"jsapi",
 	   "access_token":accessToken
    }
-   return Get(u,d)
+   r,_:=Get(u,d)
+   b, _ := ioutil.ReadAll(r.Body)
+   //fmt.Println("[contact]:",r.Status,string(b))
+   return ticket.UnmarshalTopLevel(b)
 }
 
 
@@ -83,9 +86,14 @@ func getSignPackage(r *jssdk.Raw) (*jssdk.TopLevel,error){
 }
 
 Sign(token string,u string, appid string)(*jssdk.TopLevel,error){
-    t:=getJsApiTicket(token)
+	var r jssdk.Raw
+    t,e:=getJsApiTicket(token)
+	if e!=nil {
+	    fmt.Println("ticket fail",e)
+		return r,e
+	}
 	ts:=now()
-	r:= jssdk.Raw {
+	r= jssdk.Raw {
 		Token : token,
 		AppID : appid,
 		Timestamp : ts,
