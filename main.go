@@ -180,10 +180,29 @@ func WeixinToken(ctx context.Context, event APIGatewayProxyRequest) (string,erro
 	return body,nil
 }
 
+
+func Jssdk(ctx context.Context, event APIGatewayProxyRequest) (string,error) {
+	//s,_:=json.Marshal(event)
+	e,tk:=weixin_token()
+	if e!=nil {
+		fmt.Println("eeee",e)
+		return "",e
+	}
+	fmt.Println("zzz",tk)
+	t,_:=tk.Marshal()
+	body:=string(t)
+	fmt.Println("token string",body)
+	return body,nil
+}
+
+
+
 func app(ctx context.Context, event APIGatewayProxyRequest)(APIGatewayProxyResponse,error){
 
 	r:=make(map[string]func(context.Context,APIGatewayProxyRequest) (string,error))
 	r["/"]=WeixinToken
+	r["/jssdk"]=Jssdk
+
 	fmt.Println(event)
 	p1:=event.RequestContext.Path
 	p2:=event.Path
@@ -197,7 +216,7 @@ func app(ctx context.Context, event APIGatewayProxyRequest)(APIGatewayProxyRespo
 
 func main(){
 	cloudfunction.Start(app)
-    test()
+    //test()
     //test1()
 }
 
