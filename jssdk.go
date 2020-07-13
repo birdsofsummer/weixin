@@ -82,37 +82,23 @@ func getSignPackage(r *jssdk.Raw) (*jssdk.TopLevel,error){
 	return &o
 }
 
-Sign()(*jssdk.TopLevel,error){
+Sign(token string,u string, appid string)(*jssdk.TopLevel,error){
+    t:=getJsApiTicket(token)
 	ts:=now()
-    var r jssdk.Raw
-    r.Token=get_token()
-    t:=getJsApiTicket(r.token)
-	r.AppID=""
-	r.ExpiresIn=t.ExpiresIn+ts
-	r.Timestamp=ts
-	r.NonceStr=createNonceStr(16)
-	r.JsapiTicket= t.Ticket
-	r.URL=""
-	o,e:=getSignPackage(&r)
-	//save to db
-	return o,e
+	r:= jssdk.Raw {
+		Token : token,
+		AppID : appid,
+		Timestamp : ts,
+		ExpiresIn : t.ExpiresIn+ts,
+		JsapiTicket :  t.Ticket,
+		NonceStr : createNonceStr(16),
+		URL : u,
+	}
+	return getSignPackage(&r)
 }
 
-Sign1(){
-	//lookup db
-	//...
-
-
-}
-
-
-
-
-Sign2(){
-
-
-}
 
 func main() {
-	//fmt.Println("vim-go")
+
+
 }
