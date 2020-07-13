@@ -201,8 +201,11 @@ https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&typ
     }
     const o1={
           ...o,
+          signature:get_sig(o),
           debug: true, 
-          signature:get_sig(o)
+          jsApiList: [
+               //...
+          ], 
     }
     wx.config(o1)
 ```
