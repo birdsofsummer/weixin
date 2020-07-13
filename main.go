@@ -8,7 +8,7 @@ import (
 	//"encoding/json"
 	"time"
 	. "github.com/tencentyun/scf-go-lib/cloudevents/scf"
-    //"github.com/tencentyun/scf-go-lib/cloudfunction"
+    "github.com/tencentyun/scf-go-lib/cloudfunction"
 	"./token"
 	"./db"
 	"./config"

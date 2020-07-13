@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"time"
 	"crypto/sha1"
+	"math/rand"
 	//"crypto/hmac"
 	//"crypto/sha256"
 	//"net/http"
@@ -12,23 +13,25 @@ import (
 	"io/ioutil"
 )
 
-func random(i int64) int{
+func random(i int) int{
 	rand.Seed(time.Now().UnixNano())
-	return rand.Int(i)
+	return rand.Intn(i)
 }
 
 
 //l=16
-func createNonceStr(l int64)(string){
+func createNonceStr(l int)(string){
 	chars := "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 	s:=""
 	for i:=0;i<l;i++{
 		n:=random(l-1)
-		s1:=chars[n,n+1]
+		s1:=chars[n:n+1]
 		s+=s1
 	}
 	return s
 }
+
+
 
 func now() (int64){
 	return time.Now().Unix()
@@ -46,13 +49,14 @@ func hamcsha1(secretKey string, source string) (string){
 }
 
 // hashlib.sha1(string).hexdigest()
-func _sha1(){
-
-
-
-
-
+func _sha1(s string) (string){
+	h := sha1.New()
+	h.Write([]byte(s))
+    l := fmt.Sprintf("%x", h.Sum(nil))
+    //fmt.Println(l)
+	return l
 }
+
 
 func getJsApiTicket(accessToken string) (ticket.TopLevel,error){
    u:="https://api.weixin.qq.com/cgi-bin/ticket/getticket"
