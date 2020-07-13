@@ -76,17 +76,18 @@ func getSignPackage(r *jssdk.Raw) (*jssdk.TopLevel,error){
 	s:= "jsapi_ticket=" + r.JsapiTicket + "&noncestr=" + r.NonceStr + "&timestamp=" + fmt.Sprintf("%v", r.Timestamp)  + "&url=" + r.URL 
 
 	o:= jssdk.TopLevel{
-		AppID:r.AppID,
-		NonceStr:r.NonceStr,
-		Timestamp:r.Timestamp,
-		URL:r.URL,
-		JsapiTicket:r.JsapiTicket,
-		RawString:s,
-		Signature:_sha1(s),
-		Token:r.Token,
-		ExpiresIn:r.ExpiresIn,
+		AppID : r.AppID,
+		NonceStr : r.NonceStr,
+		Timestamp : r.Timestamp,
+		URL : r.URL,
+		JsapiTicket : r.JsapiTicket,
+		RawString : s,
+		Signature : _sha1(s),
+		Token : r.Token,
+		ExpiresIn : r.ExpiresIn,
 	}
-	return &o
+
+	return &o,nil
 }
 
 Sign(token string,u string, appid string)(*jssdk.TopLevel,error){
