@@ -3,19 +3,24 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Document</title>
+  <title>weixin jssdk demo</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.9/lib/index.css" />
 </head>
 <body>
 
  <section id="app">
      <div>
-      <van-button @click="say(1)" >默认按钮</van-button>
+      <van-button 
+          v-for="(v,i) in jsApiList"  
+          @click="say(v)"
+          :type="buttons[i%5]"
+      >{{v}}</van-button>
       <van-button @click="say(2)" type="default">默认按钮</van-button>
       <van-button @click="say(3)" type="primary">主要按钮</van-button>
       <van-button @click="say(4)" type="info">信息按钮</van-button>
       <van-button @click="say(5)" type="warning">警告按钮</van-button>
       <van-button @click="say(6)" type="danger">危险按钮</van-button>
+
     </div>
  </section>
 
@@ -31,7 +36,15 @@
 
 
 <script charset="utf-8">
+
 /*   
+参考
+
+https://www.weixinsxy.com/jssdk/
+https://www.weixinsxy.com/jssdk/js/demo.js
+
+
+
 o= {
   "appId": "wx0f713af1c8799df9",
   "nonceStr": "lnihbfokhheenblk",
@@ -116,6 +129,8 @@ init1()
 Vue.use(vant.Lazyload);
 Vue.use(vant.Button);
 
+
+
  app= new Vue({
     el: '#app',
   //  template: `<van-button>按钮</van-button>`,
@@ -130,10 +145,19 @@ Vue.use(vant.Button);
      },
     },
     mounted(){
-      vant.Toast('提示');
+         //vant.Toast('提示');
     },
     data(){
       return {
+            jsApiList,
+            buttons:[
+                "default",
+                "primary",
+                "info",
+                "warning",
+                "danger",
+            ],
+
 
       }
 
