@@ -23,13 +23,27 @@ var raw = function (args) {
 };
 
 /**
-* @synopsis 签名算法 
+* @synopsis 签名算法
 *
 * @param jsapi_ticket 用于签名的 jsapi_ticket
 * @param url 用于签名的 url ，注意必须动态获取，不能 hardcode
 *
 * @returns
 */
+
+//https://www.npmjs.com/package/jssha
+// sha1('x')=='11f6ad8ec52a2984abaafd7c3b516503785c2072'
+sha1=(s)=>{
+      jsSHA = require('jssha');
+      shaObj = new jsSHA("SHA-1", "TEXT", { encoding: "UTF8" });
+      shaObj.update(s);
+      let s1=shaObj.getHash("HEX");
+      return s1
+    // shaObj = new jsSHA(string, 'TEXT');
+    //  s=shaObj.getHash('SHA-1', 'HEX');
+}
+
+
 var sign = function (jsapi_ticket, url) {
   var ret = {
     jsapi_ticket: jsapi_ticket,
@@ -38,9 +52,8 @@ var sign = function (jsapi_ticket, url) {
     url: url
   };
   var string = raw(ret);
-      jsSHA = require('jssha');
-      shaObj = new jsSHA(string, 'TEXT');
-  ret.signature = shaObj.getHash('SHA-1', 'HEX');
+  s=sha1(string)
+  ret.signature =s
 
   return ret;
 };

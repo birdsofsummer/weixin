@@ -9,8 +9,12 @@
 <body>
 
  <section id="app">
+
     <van-row >
-          <van-col span="4" v-for="(v,i) in jsApiList">
+        <p>{{config}}<p>
+    </van-row >
+    <van-row >
+          <van-col span="6" v-for="(v,i) in jsApiList">
               <van-button @click="say(v)" :type="buttons[i%5]" >{{v}} </van-button>
           </van-col>
     </van-row>
@@ -19,15 +23,17 @@
 </body>
 </html>
 
-
-
 <script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vant@2.9/lib/vant.min.js"></script>
-<script src="//res.wx.qq.com/open/js/jweixin-1.6.0.js" defer></script>
+<script src="//res.wx.qq.com/open/js/jweixin-1.6.0.js"></script>
 
 
 <script charset="utf-8">
+
+
+
+
 
 /*   
 参考
@@ -181,30 +187,26 @@ vcomponents=[
 
 get=(u)=>fetch(u).then(x=>x.json())
 
-init=async()=>{
-    u="https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-token/jssdk"
+wx.ready(function(e){
+    console.log('rrrrrrr',e)
+});
+wx.error(function(res){
+    console.log('111111',res)
+});
 
-    o=await get(u)
+
+init=async()=>{
+    let u="https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-token/jssdk"
+    let o=await get(u)
     localStorage.config=JSON.stringify(o) 
-    o1={
+    let o1={
       ...o,
       debug: true,
       jsApiList,
     }
     wx.config(o1)
+    return o
 }
-init1=()=>{
-    init().then(x=>{
-    wx.ready(function(e){
-        console.log('rrrrrrr',e)
-    });
-    wx.error(function(res){
-        console.log('111111',res)
-    });
-    })
-}
-
-init1()
 
 
 Vue.use(vant.Lazyload);
@@ -212,24 +214,25 @@ vcomponents.forEach(x=>Vue.use(vant[x]))
 
 
 
- app= new Vue({
+app= new Vue({
     el: '#app',
   //  template: `<van-button>按钮</van-button>`,
     created(){
-
     },
     methods:{
      say(x){
-          console.log(x)
-         //alert(x)
+         console.log(x)
          vant.Toast(x);
      },
     },
     mounted(){
-         //vant.Toast('提示');
+       init().then(x=>{
+           this.config=x
+       })
     },
     data(){
       return {
+            config:{},
             jsApiList,
             buttons:[
                 "default",
@@ -238,8 +241,6 @@ vcomponents.forEach(x=>Vue.use(vant[x]))
                 "warning",
                 "danger",
             ],
-
-
       }
 
     }
