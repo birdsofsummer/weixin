@@ -4,7 +4,7 @@
 //    topLevel, err := UnmarshalTopLevel(bytes)
 //    bytes, err = topLevel.Marshal()
 
-package main
+package jssdk
 
 import "encoding/json"
 
@@ -27,6 +27,7 @@ type TopLevel struct {
 	RawString   string `json:"rawString"`   
 	Timestamp   int64  `json:"timestamp"`   
 	ExpiresIn   int64  `json:"expires_in"`  
+	Token       string `json:"token"`       
 }
 
 type Raw struct {

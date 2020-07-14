@@ -8,7 +8,10 @@ import (
 	"math/rand"
 	"time"
 	"fmt"
+	"../types/jssdk"
 )
+
+
 
 func Random() string{
 	rand.Seed(time.Now().UnixNano())
@@ -40,8 +43,9 @@ func Conn(s string)(error, *xorm.EngineGroup){
 	//println("meta",m,e)
 
     t:=new(Token)
+	j:=new(jssdk.TopLevel)
 //	engine.IsTableEmpty(t)
-//	a,e:=engine.IsTableExist(t)
+//	a,e:=engine.IsTableExist(j)
 //	println("exist?",a,e)
 //	if !a{
 //		r:=engine.CreateTables(t)
@@ -50,13 +54,17 @@ func Conn(s string)(error, *xorm.EngineGroup){
 //	engine.DropTables(t)
 
 	err = engine.Sync2(t)
-
 	if err!=nil{
-		println("db sync fail",err.Error())
+		println("table token sync fail",err.Error())
 		return err,engine
 	}
 
-
+	err = engine.Sync2(j)
+	if err!=nil{
+		println("table jssdk sync fail",err.Error())
+		return err,engine
+	}
+	println("db connected")
 	return err,engine
 }
 

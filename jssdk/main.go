@@ -1,4 +1,4 @@
-package main
+package jssdk
 
 import (
 	"fmt"
@@ -8,8 +8,9 @@ import (
 	//"crypto/hmac"
 	//"crypto/sha256"
 	//"net/http"
-	. "./http1"
-	"./types/ticket"
+	. "../http1"
+	"../types/ticket"
+	jssdk1 "../types/jssdk"
 	"io/ioutil"
 )
 
@@ -40,13 +41,7 @@ func now1() string{
     return fmt.Sprintf("%v", time.Now().Unix())
 }
 
-func hamcsha1(secretKey string, source string) (string){
-	hmacObj := hmac.New(sha1.New, []byte(secretKey))
-	hmacObj.Write([]byte(source))
-	sign:=""
-	sign = base64.StdEncoding.EncodeToString(hmacObj.Sum(nil))
-	return sign
-}
+
 
 // hashlib.sha1(string).hexdigest()
 func _sha1(s string) (string){
@@ -62,20 +57,20 @@ func getJsApiTicket(accessToken string) (ticket.TopLevel,error){
    u:="https://api.weixin.qq.com/cgi-bin/ticket/getticket"
    d:=map[string]interface{}{
 	   "type":"jsapi",
-	   "access_token":accessToken
+	   "access_token":accessToken,
    }
    r,_:=Get(u,d)
    b, _ := ioutil.ReadAll(r.Body)
-   //fmt.Println("[contact]:",r.Status,string(b))
+   fmt.Println("[http]:",r.Status,string(b))
    return ticket.UnmarshalTopLevel(b)
 }
 
 
-func getSignPackage(r *jssdk.Raw) (*jssdk.TopLevel,error){
+func getSignPackage(r *jssdk1.Raw) (jssdk1.TopLevel,error){
 	//sort jntu
 	s:= "jsapi_ticket=" + r.JsapiTicket + "&noncestr=" + r.NonceStr + "&timestamp=" + fmt.Sprintf("%v", r.Timestamp)  + "&url=" + r.URL 
 
-	o:= jssdk.TopLevel{
+	o:= jssdk1.TopLevel{
 		AppID : r.AppID,
 		NonceStr : r.NonceStr,
 		Timestamp : r.Timestamp,
@@ -87,18 +82,20 @@ func getSignPackage(r *jssdk.Raw) (*jssdk.TopLevel,error){
 		ExpiresIn : r.ExpiresIn,
 	}
 
-	return &o,nil
+	return o,nil
 }
 
-Sign(token string,u string, appid string)(*jssdk.TopLevel,error){
-	var r jssdk.Raw
+func Sign(token string,u string, appid string)(jssdk1.TopLevel,error){
+	fmt.Println("sign with token",token)
+	var r jssdk1.Raw
+	var o jssdk1.TopLevel
     t,e:=getJsApiTicket(token)
 	if e!=nil {
 	    fmt.Println("ticket fail",e)
-		return r,e
+		return o,e
 	}
 	ts:=now()
-	r= jssdk.Raw {
+	r= jssdk1.Raw {
 		Token : token,
 		AppID : appid,
 		Timestamp : ts,
@@ -112,6 +109,5 @@ Sign(token string,u string, appid string)(*jssdk.TopLevel,error){
 
 
 func main() {
-
-
+    //fmt.Println(123)
 }

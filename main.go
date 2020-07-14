@@ -13,6 +13,8 @@ import (
 	"./db"
 	"./config"
 	config1 "./types/config"
+	jssdk1 "./jssdk"
+	"./types/jssdk"
 	. "./scf"
 )
 
@@ -26,35 +28,56 @@ var (
 
 
 type Tokens []db.Token
+type Jssdks []jssdk.TopLevel
 
-
-func Add(d *db.Token) (int64,error){
+func AddToken(d *db.Token) (int64,error){
 	affected, err := engine.Insert(d)
 
 	if err!=nil{
-		println("eeee",err.Error())
+		println("token add fail",err.Error())
 	}
 	println(affected, err)
-
 	return affected, err
 }
 
 
-func List() Tokens{
+func ListToken() Tokens{
 	var d Tokens
 	err := engine.Find(&d)
 	if err!=nil{
-		fmt.Println("oo",err.Error())
+		fmt.Println("token list fail",err.Error())
 	}
 	return d
 }
+
+func AddJssdk(d *jssdk.TopLevel)(int64,error){
+	affected, err := engine.Insert(d)
+
+	if err!=nil{
+		println("jssdk add fail ",err.Error())
+	}
+	println(affected, err)
+	return affected, err
+}
+
+func ListJssdk() Jssdks{
+	var d Jssdks
+	err := engine.Find(&d)
+	if err!=nil{
+		fmt.Println("jssdk list fail",err.Error())
+	}
+	return d
+}
+
+
+
 
 
 func refresh_token()(error,db.Token){
 	var tk1 db.Token
 	tk,e:=token.GetToken(Config)
 	if e!=nil {
-		fmt.Println("eeee",e)
+		fmt.Println("fail to fetch token",e)
 		return e,tk1
 	}
 	now:=time.Now().Unix()
@@ -65,7 +88,10 @@ func refresh_token()(error,db.Token){
 
 	tk1.AccessToken=tk.AccessToken
     tk1.ExpiresIn=exp
-	
+
+	fmt.Println("new token is:",tk)
+	fmt.Println("new token is:",tk1)
+
 	return e,tk1
 }
 
@@ -91,11 +117,12 @@ func refresh_save() (error,db.Token){
 		return e,tk
 	}
 	fmt.Println("save new tk ",tk)
-	n,e:=Add(&tk)
+	n,e:=AddToken(&tk)
 	if e!=nil {
+		fmt.Println("token save fail")
 		return e,tk
 	}
-	fmt.Println("save done",n)
+	fmt.Println("token save done",n)
 	return e,tk
 }
 
@@ -104,21 +131,19 @@ func init_db(){
 	var e error
 	e,Config=config.GetConfig(config_file)
 	if e!=nil {
-		fmt.Println("eeee",e)
+		fmt.Println("get config fail",e)
 		return
 	}
 	s:= Config.DB.Server
 	e,engine=db.Conn(s)
 	if e!=nil {
-		fmt.Println("eeee",e)
+		fmt.Println("init db fail",e)
 		return
 	}
 }
 
 func weixin_token()(error,db.Token){
-	init_db()
-	fmt.Println(engine)
-	d:=List()
+	d:=ListToken()
 	fmt.Println("[db]:",d)
 	if len(d) == 0 {
 		fmt.Println("nothing in db,wait to get")
@@ -129,10 +154,9 @@ func weixin_token()(error,db.Token){
 		tk:=d[0]
 		exp:=tk.ExpiresIn
 		now:=time.Now().Unix()
-
 		du:= exp -now
-
 		fmt.Println(exp,now,du)
+
 		if du > 180 {
 			fmt.Println("exist valid token",exp,now,(exp-now)/60,"min",tk)
 			return e,tk
@@ -143,7 +167,82 @@ func weixin_token()(error,db.Token){
 	}
 }
 
+
+
+
+func refresh_jssdk(u string, appid string)(error,jssdk.TopLevel){
+
+	//affected, err := engine.Delete(&tk)
+	//if err!=nil {
+	//	fmt.Println("[db]del fail",tk)
+	//}
+
+	var d jssdk.TopLevel
+	var tk db.Token
+	var e error
+
+	e,tk=weixin_token()
+	if e!=nil {
+		fmt.Println("get token fail",d)
+		return e,d
+	}
+
+	fmt.Println("zzzzzzzzz",tk)
+	t,_:=tk.Marshal()
+	fmt.Println("token string",string(t))
+
+
+/*
+	session := engine.NewSession()
+	defer session.Close()
+	if _, e := session.Exec("delete from jssdk where  expires_in > 0"); e != nil {
+		return e,d
+	}
+	fmt.Println("del jssdk sucess",d)
+*/
+	d,e=jssdk1.Sign(tk.AccessToken,u,appid)
+
+	if e!=nil {
+		return e,d
+	}
+	fmt.Println("save new ticket ",tk)
+	n,e:=AddJssdk(&d)
+	if e!=nil {
+		return e,d
+	}
+	fmt.Println("save new ticket done",n)
+	return e,d
+}
+
+
+
+func get_jssdk(u string, appid string)(error,jssdk.TopLevel){
+   d:=ListJssdk()
+   fmt.Println("old jssdk",d)
+   if len(d) == 0 {
+		fmt.Println("no jssdk in db,wait to get")
+		return refresh_jssdk(u,appid)
+   }else{
+		var e error
+		d1:=d[0]
+		exp:=d1.ExpiresIn
+		now:=time.Now().Unix()
+		du:= exp -now
+		fmt.Println("old jssdk",exp,now,du)
+		if du > 180 {
+			fmt.Println("exist valid jssdk",exp,now,(exp-now)/60,"min",d1)
+			return e,d1
+		}else{
+			fmt.Println("exist invalid jssdk,wait to refresh",d1)
+			return refresh_jssdk(u,appid)
+		}
+   }
+}
+
+
 func test(){
+	init_db()
+	fmt.Println(engine)
 	e,tk:=weixin_token()
 	if e!=nil {
 		fmt.Println("eeee",e)
@@ -166,6 +265,27 @@ func test1(){
 	fmt.Println("token string",string(t))
 }
 
+
+func test3(){
+	init_db()
+	appid:=Config.Appid
+
+
+	u:="https://www.baidu.com"  /////event
+    e,d:=get_jssdk(u,appid)
+	if e!=nil {
+		fmt.Println("111 jssdk fail",e)
+		return 
+	}
+	fmt.Println("zzz",d)
+	t,_:=d.Marshal()
+	body:=string(t)
+	fmt.Println("jssdk string",body)
+}
+
+
+
+
 func WeixinToken(ctx context.Context, event APIGatewayProxyRequest) (string,error) {
 	//s,_:=json.Marshal(event)
 	e,tk:=weixin_token()
@@ -181,24 +301,58 @@ func WeixinToken(ctx context.Context, event APIGatewayProxyRequest) (string,erro
 }
 
 
+
+/*
+
+注意 URL 一定要动态获取，不能 hardcode.
+$protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+$url = "$protocol$_SERVER[HTTP_HOST]$_SERVER[REQUEST_URI]";
+
+
+$GOPATH/src/github.com/tencentyun/scf-go-lib/cloudevents/scf/apigw.go
+headers:{
+    "origin": "https://tieba.baidu.com",
+    "referer": "https://tieba.baidu.com/index.html",
+}
+
+
+event.Headers["origin"]
+event.Headers["referer"]
+
+*/
+
 func Jssdk(ctx context.Context, event APIGatewayProxyRequest) (string,error) {
 	//s,_:=json.Marshal(event)
-	e,tk:=weixin_token()
+	appid:=Config.Appid
+	u:="https://www.baidu.com"  /////event
+
+	_,ok:=event.Headers["referer"]	
+	if ok {
+		u=event.Headers["referer"]
+	}
+
+	_,ok1:=event.Headers["origin"]	
+	if ok1 {
+		u=event.Headers["origin"]
+	}
+
+    e,d:=get_jssdk(u,appid)
 	if e!=nil {
-		fmt.Println("eeee",e)
+		fmt.Println("111 jssdk fail",e)
 		return "",e
 	}
-	fmt.Println("zzz",tk)
-	t,_:=tk.Marshal()
+	fmt.Println("zzz",d)
+	t,_:=d.Marshal()
 	body:=string(t)
-	fmt.Println("token string",body)
+	fmt.Println("jssdk string",body)
 	return body,nil
 }
 
 
 
 func app(ctx context.Context, event APIGatewayProxyRequest)(APIGatewayProxyResponse,error){
-
+	init_db()
+	fmt.Println(engine)
 	r:=make(map[string]func(context.Context,APIGatewayProxyRequest) (string,error))
 	r["/"]=WeixinToken
 	r["/jssdk"]=Jssdk
@@ -214,9 +368,17 @@ func app(ctx context.Context, event APIGatewayProxyRequest)(APIGatewayProxyRespo
 	return Format_res(f(ctx,event)),nil
 }
 
-func main(){
+
+
+
+func start(){
 	cloudfunction.Start(app)
+}
+
+func main(){
     //test()
     //test1()
+	//test3()
+	start()
 }
 

@@ -12,6 +12,7 @@ import (
 
 // 7200s
 // 2000/d
+// {"errcode":40164,"errmsg":"invalid ip 113.104.212.128 ipv6 ::ffff:113.104.212.128, not in whitelist hint: [bEGdNfwgE-CKgVTa]"}
 
 func GetToken(c *AppConfig)(token.TopLevel, error){
 	u:="https://api.weixin.qq.com/cgi-bin/token"
@@ -22,7 +23,7 @@ func GetToken(c *AppConfig)(token.TopLevel, error){
 	}
 	r,_:=Get(u,d)
 	b, _ := ioutil.ReadAll(r.Body)
-	//fmt.Println("[contact]:",r.Status,string(b))
+	fmt.Println("[token]:",r.Status,string(b))
 	return token.UnmarshalTopLevel(b)
 }
 

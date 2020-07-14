@@ -1,0 +1,31 @@
+{
+  "path": "/weixin-token/dddd",
+  "queryString": {},
+  "httpMethod": "GET",
+  "headers": {
+    "accept": "*/*",
+    "accept-encoding": "gzip, deflate, br",
+    "accept-language": "zh-CN,zh;q=0.8,zh-TW;q=0.7,zh-HK;q=0.5,en-US;q=0.3,en;q=0.2",
+    "cache-control": "no-cache",
+    "connection": "keep-alive",
+    "endpoint-timeout": "15",
+    "host": "service-xxxx-xxxx.gz.apigw.tencentcs.com",
+    "origin": "https://tieba.baidu.com",
+    "pragma": "no-cache",
+    "referer": "https://tieba.baidu.com/index.html",
+    "user-agent": "Mozilla/5.0 (X11; Linux x86_64; rv:79.0) Gecko/20100101 Firefox/79.0",
+    "x-anonymous-consumer": "true",
+    "x-api-requestid": "672b99c37c1e244877a78191be11206f",
+    "x-b3-traceid": "672b99c37c1e244877a78191be11206f",
+    "x-qualifier": "$LATEST"
+  },
+  "requestContext": {
+    "serviceId": "service-qsqxa5fo",
+    "path": "/weixin-token",
+    "httpMethod": "ANY",
+    "requestId": "",
+    "stage": "release",
+    "identity": {},
+    "sourceIp": "13.14.22.1"
+  }
+}
