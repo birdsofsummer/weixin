@@ -58,19 +58,41 @@ ls /tmp/1.zip
 ## 测试
 
 ```bash
-curl https://service-xxxx-xxx.gz.apigw.tencentcs.com/release/weixin-token/  
+curl https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-token/
+
+curl 'https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-token/jssdk' -H 'referer: https://tieba.baidu.com/index.html' -H 'Origin: https://tieba.baidu.com/' 
+
 ```
+
 ```json
 {
-  "access_token": "35_zekS2770iEXcIXj5LzAGue7IsS7zpWSmWq3crHZ7718L5R---e9AbdATZ7zSSxVT96GJ_-AdIYeJcQRm0qm8_M-Wnmtw654cVDSUiny1pxoPVziwUNqRdH6A_88O5gCgcjdVUIYn_8mo7t3IOGEfAIAFXV",
-  "expires_in": 1594549433
+  "access_token": "35_ZSs1S_3-xP4AqVF_sDCqXSsbtSrus7mPIoQd8Vm8CqUoD6tYwtfqlAIocS67KhgB0F8D_icwEj1VfYxjj9OkYtYqFZI9-6MfaZyYGWdQzo1eoBoLclC98d4tXoRhm7KLGUrRb96vSUqJq8qdOOGiAFAFFX",
+  "expires_in": 1594706754
+}
+```
+
+```json
+
+{
+  "appId": "wx0f713af1c8799df9",
+  "nonceStr": "mgcdkfbkhcahboid",
+  "jsapi_ticket": "sM4AOVdWfPE4DxkXGEs8VMdpedBBeAe0I5SLCr-9y-7SAUmTDPVMYOjPqns8dRZsAGT-KAEc-ecVmiNEWCIeqA",
+  "signature": "a43364e41f29d05acb4be266933d5214581fc9ae",
+  "url": "https://tieba.baidu.com/",
+  "rawString": "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VMdpedBBeAe0I5SLCr-9y-7SAUmTDPVMYOjPqns8dRZsAGT-KAEc-ecVmiNEWCIeqA&noncestr=mgcdkfbkhcahboid&timestamp=1594700144&url=https://tieba.baidu.com/",
+  "timestamp": 1594700144,
+  "expires_in": 1594707344,
+  "token": "35_ZSs1S_3-xP4AqVF_sDCqXSsbtSrus7mPIoQd8Vm8CqUoD6tYwtfqlAIocS67KhgB0F8D_icwEj1VfYxjj9OkYtYqFZI9-6MfaZyYGWdQzo1eoBoLclC98d4tXoRhm7KLGUrRb96vSUqJq8qdOOGiAFAFFX"
 }
 
-
-
-
-
 ```
+
+
+
+
+
+
+
 
 ### 已知问题
 

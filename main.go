@@ -60,9 +60,9 @@ func AddJssdk(d *jssdk.TopLevel)(int64,error){
 	return affected, err
 }
 
-func ListJssdk() Jssdks{
+func ListJssdk(u string) Jssdks{
 	var d Jssdks
-	err := engine.Desc("expires_in").Find(&d)
+	err := engine.Desc("expires_in").Where("url = ? ",u).Find(&d)
 	if err!=nil{
 		fmt.Println("jssdk list fail",err.Error())
 	}
@@ -217,7 +217,7 @@ func refresh_jssdk(u string, appid string)(error,jssdk.TopLevel){
 
 
 func get_jssdk(u string, appid string)(error,jssdk.TopLevel){
-   d:=ListJssdk()
+   d:=ListJssdk(u)
    fmt.Println("old jssdk",d)
    if len(d) == 0 {
 		fmt.Println("no jssdk in db,wait to get")
