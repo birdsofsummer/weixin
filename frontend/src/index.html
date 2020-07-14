@@ -24,7 +24,18 @@
 
 
     <van-row >
+          <van-field
+                v-model="href"
+                name="href"
+                label="href"
+                placeholder="..."
+          />
+    </van-row >
+
+
+    <van-row >
         <van-form >
+
           <van-field
                 v-for="(a,b) in config_keys"
                 v-model="config[a]"
@@ -331,6 +342,7 @@ app= new Vue({
     },
     data(){
       return {
+            href:window.location.href,
             config:{},
             config_keys:[
                   'appId',
