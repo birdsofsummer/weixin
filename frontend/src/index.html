@@ -9,19 +9,13 @@
 <body>
 
  <section id="app">
-     <div>
-      <van-button 
-          v-for="(v,i) in jsApiList"  
-          @click="say(v)"
-          :type="buttons[i%5]"
-      >{{v}}</van-button>
-      <van-button @click="say(2)" type="default">默认按钮</van-button>
-      <van-button @click="say(3)" type="primary">主要按钮</van-button>
-      <van-button @click="say(4)" type="info">信息按钮</van-button>
-      <van-button @click="say(5)" type="warning">警告按钮</van-button>
-      <van-button @click="say(6)" type="danger">危险按钮</van-button>
-
-    </div>
+    <van-row>
+      <div v-for="(v,i) in jsApiList"  >
+          <van-col span="4">
+          <van-button @click="say(v)" :type="buttons[i%5]" >{{v}} </van-button>
+          </van-col>
+      </div>
+    </van-row>
  </section>
 
 </body>
@@ -42,7 +36,7 @@
 
 https://www.weixinsxy.com/jssdk/
 https://www.weixinsxy.com/jssdk/js/demo.js
-
+https://vant-contrib.gitee.io/vant/#/zh-CN/cell
 
 
 o= {
@@ -97,6 +91,95 @@ const jsApiList=[
         'openCard',
 ]
 
+vcomponents=[
+	"ActionSheet",
+	"AddressEdit",
+	"AddressList",
+	"Area",
+	"Button",
+	"Calendar",
+	"Card",
+	"Cell",
+	"CellGroup",
+	"Checkbox",
+	"CheckboxGroup",
+	"Circle",
+	"Col",
+	"Collapse",
+	"CollapseItem",
+	"ContactCard",
+	"ContactEdit",
+	"ContactList",
+	"CountDown",
+	"Coupon",
+	"CouponCell",
+	"CouponList",
+	"DatetimePicker",
+	"Dialog",
+	"Divider",
+	"DropdownItem",
+	"DropdownMenu",
+	"Empty",
+	"Field",
+	"Form",
+	"GoodsAction",
+	"GoodsActionButton",
+	"GoodsActionIcon",
+	"Grid",
+	"GridItem",
+	"Icon",
+	"Image",
+	"ImagePreview",
+	"IndexAnchor",
+	"IndexBar",
+	"Info",
+	"Lazyload",
+	"List",
+	"Loading",
+	"Locale",
+	"NavBar",
+	"NoticeBar",
+	"Notify",
+	"NumberKeyboard",
+	"Overlay",
+	"Pagination",
+	"Panel",
+	"PasswordInput",
+	"Picker",
+	"Popup",
+	"Progress",
+	"PullRefresh",
+	"Radio",
+	"RadioGroup",
+	"Rate",
+	"Row",
+	"Search",
+	"ShareSheet",
+	"Sidebar",
+	"SidebarItem",
+	"Skeleton",
+	"Sku",
+	"Slider",
+	"Step",
+	"Stepper",
+	"Steps",
+	"Sticky",
+	"SubmitBar",
+	"Swipe",
+	"SwipeCell",
+	"SwipeItem",
+	"Switch",
+	"SwitchCell",
+	"Tab",
+	"Tabbar",
+	"TabbarItem",
+	"Tabs",
+	"Tag",
+	"Toast",
+	"TreeSelect",
+	"Uploader"
+]
+
 
 get=(u)=>fetch(u).then(x=>x.json())
 
@@ -127,7 +210,7 @@ init1()
 
 
 Vue.use(vant.Lazyload);
-Vue.use(vant.Button);
+vcomponents.forEach(x=>Vue.use(vant[x]))
 
 
 
