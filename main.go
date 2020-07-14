@@ -326,15 +326,17 @@ func Jssdk(ctx context.Context, event APIGatewayProxyRequest) (string,error) {
 	appid:=Config.Appid
 	u:="https://www.baidu.com"  /////event
 
+
+//	_,ok1:=event.Headers["origin"]	
+//	if ok1 {
+//		u=event.Headers["origin"]
+//	}
+
 	_,ok:=event.Headers["referer"]	
 	if ok {
 		u=event.Headers["referer"]
 	}
 
-	_,ok1:=event.Headers["origin"]	
-	if ok1 {
-		u=event.Headers["origin"]
-	}
 
     e,d:=get_jssdk(u,appid)
 	if e!=nil {
