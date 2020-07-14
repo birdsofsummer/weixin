@@ -378,7 +378,7 @@ func start(){
 func main(){
     //test()
     //test1()
-	test3()
-	//start()
+	//test3()
+	start()
 }
 
