@@ -212,7 +212,7 @@ https://api.weixin.qq.com/cgi-bin/ticket/getticket?access_token=ACCESS_TOKEN&typ
       timestamp: 1594610458,       //
       nonceStr: 'zRjmHbYBHZ3kACxC',//
       jsapi_ticket:"sM4AOVdWfPE4DxkXGEs8VMCPGGVi4C3VM0P37wVUCFvkVAy_90u5h9nbSlYy3-Sl-HhTdfl2fzFy1AOcHKP7qg", //
-       url: 'http://example.com',
+       url: 'http://example.com', //!!!
       //signature: 'bb3bef01a685b5c90e687679339421dbf15548b4', //
     }
     const o1={

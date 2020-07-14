@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.9/lib/index.css" />
+</head>
+<body>
+
+ <section id="#app">
+     <div>
+      <button @click="say(1)" >按钮</button>
+      <van-button @click="say(2)" type="default">默认按钮</van-button>
+      <van-button @click="say(3)" type="primary">主要按钮</van-button>
+      <van-button @click="say(4)" type="info">信息按钮</van-button>
+      <van-button @click="say(5)" type="warning">警告按钮</van-button>
+      <van-button @click="say(6)" type="danger">危险按钮</van-button>
+    </div>
+ </section>
+
+</body>
+</html>
+
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vant@2.9/lib/vant.min.js"></script>
+<script src="//res.wx.qq.com/open/js/jweixin-1.6.0.js" defer></script>
+
+
+<script charset="utf-8">
+/*   
+o= {
+  "appId": "wx0f713af1c8799df9",
+  "nonceStr": "lnihbfokhheenblk",
+  "jsapi_ticket": "sM4AOVdWfPE4DxkXGEs8VMdpedBBeAe0I5SLCr-9y-6pJ6IF1cmOTqjMl5qREtXstnTX1za-7BZqKHTKiCxi4w",
+  "signature": "c8da7cac6f40ac0a6f72a804886c51d65451f660",
+  "url": "https://www.baidu.com",
+  "rawString": "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VMdpedBBeAe0I5SLCr-9y-6pJ6IF1cmOTqjMl5qREtXstnTX1za-7BZqKHTKiCxi4w&noncestr=lnihbfokhheenblk&timestamp=1594694353&url=https://www.baidu.com",
+  "timestamp": 1594694353,
+  "expires_in": 1594701553,
+  "token": "35_uu8a-DngMD28gRTAv-xcwgl6wxSyfm2cT6miOxgP-z9H18vSA8Snbi4c8gZOjlmbaH70Qg45_koZMuD-2Uq-yTHTPhow6n2kjlmKCRd_EpH3bK1ft3Af3Wti7_uSa_gqOHU71q03_7dWTbkhGQVjABAZJO"
+}
+*/
+
+const jsApiList=[
+        'checkJsApi',
+        'onMenuShareTimeline',
+        'onMenuShareAppMessage',
+        'onMenuShareQQ',
+        'onMenuShareWeibo',
+        'onMenuShareQZone',
+        'hideMenuItems',
+        'showMenuItems',
+        'hideAllNonBaseMenuItem',
+        'showAllNonBaseMenuItem',
+        'translateVoice',
+        'startRecord',
+        'stopRecord',
+        'onVoiceRecordEnd',
+        'playVoice',
+        'onVoicePlayEnd',
+        'pauseVoice',
+        'stopVoice',
+        'uploadVoice',
+        'downloadVoice',
+        'chooseImage',
+        'previewImage',
+        'uploadImage',
+        'downloadImage',
+        'getNetworkType',
+        'openLocation',
+        'getLocation',
+        'hideOptionMenu',
+        'showOptionMenu',
+        'closeWindow',
+        'scanQRCode',
+        'chooseWXPay',
+        'openProductSpecificView',
+        'addCard',
+        'chooseCard',
+        'openCard',
+]
+
+
+get=(u)=>fetch(u).then(x=>x.json())
+
+init=async()=>{
+    u="https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-token/jssdk"
+
+    o=await get(u)
+    o1={
+      ...o,
+      debug: true,
+      jsApiList,
+    }
+    wx.config(o1)
+}
+init1=()=>{
+    init().then(x=>{
+    wx.ready(function(e){
+        console.log('rrrrrrr',e)
+    });
+    wx.error(function(res){
+        console.log('111111',res)
+    });
+    })
+}
+
+init1()
+
+
+Vue.use(vant.Lazyload);
+Vue.use(vant.Button);
+
+ app= new Vue({
+    el: '#app',
+  //  template: `<van-button>按钮</van-button>`,
+    created(){
+
+    },
+    methods:{
+     say(x){
+         alert(x)
+         //vant.Toast(x);
+     },
+    },
+    mounted(){
+      vant.Toast('提示');
+    },
+    data(){
+      return {
+
+      }
+
+    }
+  });
+
+
+</script>

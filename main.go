@@ -62,7 +62,7 @@ func AddJssdk(d *jssdk.TopLevel)(int64,error){
 
 func ListJssdk() Jssdks{
 	var d Jssdks
-	err := engine.Find(&d)
+	err := engine.Desc("expires_in").Find(&d)
 	if err!=nil{
 		fmt.Println("jssdk list fail",err.Error())
 	}
@@ -228,7 +228,7 @@ func get_jssdk(u string, appid string)(error,jssdk.TopLevel){
 		exp:=d1.ExpiresIn
 		now:=time.Now().Unix()
 		du:= exp -now
-		fmt.Println("old jssdk",exp,now,du)
+		fmt.Println("old jssdk 111111111111111111",exp,now,du)
 		if du > 180 {
 			fmt.Println("exist valid jssdk",exp,now,(exp-now)/60,"min",d1)
 			return e,d1
@@ -378,7 +378,7 @@ func start(){
 func main(){
     //test()
     //test1()
-	//test3()
-	start()
+	test3()
+	//start()
 }
 
