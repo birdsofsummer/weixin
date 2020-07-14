@@ -11,6 +11,35 @@
  <section id="app">
 
     <van-row >
+        <p>
+          签名生成规则如下：
+
+            参与签名的字段包括有效的 jsapi_ticket（获取方式详见微信 JSSDK 文档）， noncestr （随机字符串，由开发者随机生成），timestamp （由开发者生成的当前时间戳）， url（当前网页的URL，不包含#及其后面部分。注意：对于没有只有域名没有 path 的 URL ，浏览器会自动加上 / 作为 path，如打开 http://qq.com 则获取到的 URL 为 http://qq.com/）。
+            对所有待签名参数按照字段名的 ASCII 码从小到大排序（字典序）后，使用 URL 键值对的格式（即key1=value1&key2=value2…）拼接成字符串 string1。这里需要注意的是所有参数名均为小写字符。
+            接下来对 string1 作 sha1 加密，字段名和字段值都采用原始值，不进行 URL 转义。即 signature=sha1(string1)。
+        
+        </p>
+   </van-row >
+
+
+
+    <van-row >
+        <van-form >
+          <van-field
+                v-for="(a,b) in config_keys"
+                v-model="config[a]"
+                :name="a"
+                :label="a"
+                :placeholder="a"
+          />
+        </van-form >
+   </van-row >
+
+
+
+
+
+    <van-row >
         <p>{{config}}<p>
     </van-row >
     <van-row >
@@ -41,6 +70,28 @@
 https://www.weixinsxy.com/jssdk/
 https://www.weixinsxy.com/jssdk/js/demo.js
 https://vant-contrib.gitee.io/vant/#/zh-CN/cell
+
+
+验签名
+https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign
+
+o= {
+  "appId": "wx0f713af1c8799df9",
+  "nonceStr": "fafecjbomelanndg",
+  "jsapi_ticket": "sM4AOVdWfPE4DxkXGEs8VMdpedBBeAe0I5SLCr-9y-5fDKLsLSZ6pu_XFLnO3wHDK7OZZnWg8hXQYE8XoXR-Lg",
+  "signature": "8e8259fabb6eb8398c45edfac45e4f2a6f18aa05",
+  "url": "https://weixin-1252957949.cos-website.ap-guangzhou.myqcloud.com",
+  "rawString": "jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VMdpedBBeAe0I5SLCr-9y-5fDKLsLSZ6pu_XFLnO3wHDK7OZZnWg8hXQYE8XoXR-Lg&noncestr=fafecjbomelanndg&timestamp=1594719045&url=https://weixin-1252957949.cos-website.ap-guangzhou.myqcloud.com",
+  "timestamp": 1594719045,
+  "expires_in": 1594726245,
+  "token": "35_xRHmLhoT_m12gUYak51bbcpi7WOILN9c1jb_7eCm2ZmdyhPqYqnWzSb2hjjEYB7HG7783VobRBoHG1cZszbB9qBndbEsxPbmG57SMkkQhcsjavmXLfOh5qJKVANAJoe9XQh8l5HbeGYPo9t1ZHXjAGALTJ"
+}
+
+
+s='jsapi_ticket=sM4AOVdWfPE4DxkXGEs8VMdpedBBeAe0I5SLCr-9y-5fDKLsLSZ6pu_XFLnO3wHDK7OZZnWg8hXQYE8XoXR-Lg&noncestr=fafecjbomelanndg&timestamp=1594719045&url=https://weixin-1252957949.cos-website.ap-guangzhou.myqcloud.com'
+
+sign(s) == '8e8259fabb6eb8398c45edfac45e4f2a6f18aa05'
+
 
 
 o= {
@@ -212,6 +263,51 @@ init=async()=>{
 Vue.use(vant.Lazyload);
 vcomponents.forEach(x=>Vue.use(vant[x]))
 
+events={
+    openLocation:{
+        latitude: 22.545538,
+        longitude: 114.054565,
+        name: 'aaa',
+        address: 'bbb', 
+        scale: 10,
+    },
+    checkJsApi:{
+      jsApiList: ['chooseImage'],
+      success: function(res) {
+         vant.Toast(res);
+      // 如：{"checkResult":{"chooseImage":true},"errMsg":"checkJsApi:ok"}
+      }
+    },
+    updateAppMessageShareData:{
+        title: 'aa', // 分享标题
+        desc: 'bb', // 分享描述
+        link: 'cc', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: 'dd', // 分享图标
+        success: function () {
+             vant.Toast("share success");
+        },
+    },
+    updateTimelineShareData:{
+        title: 'aa', // 分享标题
+        link: 'cc', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: 'dd', // 分享图标
+        success: function () {
+             vant.Toast("share success");
+        },
+    },
+    onMenuShareTimeline:{
+        title: 'aa', // 分享标题
+        link: 'cc', // 分享链接，该链接域名或路径必须与当前页面对应的公众号JS安全域名一致
+        imgUrl: 'dd', // 分享图标
+        success: function () {
+             vant.Toast("share success");
+        },
+
+    },
+
+    //...
+}
+
 
 
 app= new Vue({
@@ -223,6 +319,9 @@ app= new Vue({
      say(x){
          console.log(x)
          vant.Toast(x);
+         if (events[x]) {
+            wx[x](events[x])
+         }
      },
     },
     mounted(){
@@ -233,6 +332,18 @@ app= new Vue({
     data(){
       return {
             config:{},
+            config_keys:[
+                  'appId',
+                  'nonceStr',
+                  'jsapi_ticket',
+                  'signature',
+                  'url',
+                  'rawString',
+                  'timestamp',
+                  'expires_in',
+                  'token',
+            ],
+            events,
             jsApiList,
             buttons:[
                 "default",
