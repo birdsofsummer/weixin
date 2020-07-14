@@ -1,0 +1,18 @@
+component: website
+name: weixin
+org: serverless
+app: weixin
+stage: dev
+
+inputs:
+  src:
+    src: ./src
+    hook: echo npm run build
+    index: index.html
+    error: index.html
+    envPath: ./
+  region: ap-guangzhou
+  bucketName: weixin
+  protocol: https
+  env:
+    apiUrl: https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-token

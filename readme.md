@@ -88,6 +88,18 @@ curl 'https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-
 ```
 
 
+### frontend
+
+
+```bash
+cd frontend
+sls --debug
+
+```
+
+
+
+
 
 
 
