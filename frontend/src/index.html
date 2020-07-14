@@ -8,9 +8,9 @@
 </head>
 <body>
 
- <section id="#app">
+ <section id="app">
      <div>
-      <button @click="say(1)" >按钮</button>
+      <van-button @click="say(1)" >默认按钮</van-button>
       <van-button @click="say(2)" type="default">默认按钮</van-button>
       <van-button @click="say(3)" type="primary">主要按钮</van-button>
       <van-button @click="say(4)" type="info">信息按钮</van-button>
@@ -22,6 +22,9 @@
 </body>
 </html>
 
+
+
+<script src="https://cdn.bootcdn.net/ajax/libs/moment.js/2.27.0/moment.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/vant@2.9/lib/vant.min.js"></script>
 <script src="//res.wx.qq.com/open/js/jweixin-1.6.0.js" defer></script>
@@ -88,6 +91,7 @@ init=async()=>{
     u="https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-token/jssdk"
 
     o=await get(u)
+    localStorage.config=JSON.stringify(o) 
     o1={
       ...o,
       debug: true,
@@ -120,8 +124,9 @@ Vue.use(vant.Button);
     },
     methods:{
      say(x){
-         alert(x)
-         //vant.Toast(x);
+          console.log(x)
+         //alert(x)
+         vant.Toast(x);
      },
     },
     mounted(){

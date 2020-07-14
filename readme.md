@@ -91,6 +91,9 @@ curl 'https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-
 ### frontend
 
 
+[配置JS接口安全域名](https://mp.weixin.qq.com/cgi-bin/settingpage?t=setting/function&action=function&lang=zh_CN)
+
+
 ```bash
 cd frontend
 sls --debug
