@@ -9,12 +9,10 @@
 <body>
 
  <section id="app">
-    <van-row>
-      <div v-for="(v,i) in jsApiList"  >
-          <van-col span="4">
-          <van-button @click="say(v)" :type="buttons[i%5]" >{{v}} </van-button>
+    <van-row >
+          <van-col span="4" v-for="(v,i) in jsApiList">
+              <van-button @click="say(v)" :type="buttons[i%5]" >{{v}} </van-button>
           </van-col>
-      </div>
     </van-row>
  </section>
 
