@@ -11,15 +11,15 @@
  <section id="app">
 
     <van-row >
-        <p>{{config}}<p>
-    </van-row >
-    <van-row >
           <van-col span="6" v-for="(v,i) in jsApiList">
               <van-button @click="say(v)" :type="buttons[i%5]" >{{v}} </van-button>
           </van-col>
     </van-row>
 
 
+    <van-row >
+        <p>{{config}}<p>
+    </van-row >
 
 
     <van-row >
