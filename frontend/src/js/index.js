@@ -212,6 +212,21 @@ vcomponents=[
 
 get=(u,d={})=>axios.get(u,d).then(x=>x.data)
 
+
+
+
+ var shareData = {
+    title: '微信JS-SDK Demo',
+    desc: '微信JS-SDK,帮助第三方为用户提供更优质的移动web服务',
+    link: 'http://demo.open.weixin.qq.com/jssdk/',
+    imgUrl: 'http://mmbiz.qpic.cn/mmbiz/icTdbqWNOwNRt8Qia4lv7k3M9J1SKqKCImxJCt7j9rHYicKDI45jRPBxdzdyREWnk0ia0N5TMnMfth7SdxtzMvVgXg/0'
+  };
+
+  wx.onMenuShareAppMessage(shareData);
+  wx.onMenuShareTimeline(shareData);
+
+
+
 wx.ready(function(e){
     vant.Toast("ready");
     console.log('rrrrrrr',e)
@@ -263,13 +278,54 @@ vcomponents.forEach(x=>Vue.use(vant[x]))
 
 
 
-  // 3 智能接口
-  var voice = {
+
+
+
+// 3 智能接口
+  voice = {
     localId: '',
     serverId: ''
-  };
+  }
+  images={
+        serverId:[],  //下载
+        localId:[],   //上传
+  }
+  codes = [];
+  cardList=[]
 
 
+
+
+
+function decryptCode(code) {
+    get('/jssdk/decrypt_code.php?code=' + encodeURI(code)).then(res=>{
+      if (res.errcode == 0) {
+        codes.push(res.code);
+        cardList.push({
+            cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
+            code: x
+        })
+      }
+    })
+}
+
+
+translateVoice=function () {
+    if (voice.localId == '') {
+      alert('请先使用 startRecord 接口录制一段声音');
+      return;
+    }
+    wx.translateVoice({
+      localId: voice.localId,
+      complete: function (res) {
+        if (res.hasOwnProperty('translateResult')) {
+          alert('识别结果：' + res.translateResult);
+        } else {
+          alert('无法识别');
+        }
+      }
+    });
+ }
 
 
 
@@ -404,28 +460,259 @@ events={
                 alert(JSON.stringify(res));
               }
         },
+
+        // 3.1 识别音频并返回识别结果
+        translateVoice:{
+              localId: voice.localId,
+              complete: function (res) {
+                if (res.hasOwnProperty('translateResult')) {
+                  alert('识别结果：' + res.translateResult);
+                } else {
+                  alert('无法识别');
+                }
+              }
+        },
+        // 4 音频接口
+        // 4.2 开始录音
+        startRecord:{
+              cancel: function () {
+                alert('用户拒绝授权录音');
+              }
+        },
+        // 4.3 停止录音
+        stopRecord:{
+              success: function (res) {
+                voice.localId = res.localId;
+              },
+              fail: function (res) {
+                alert(JSON.stringify(res));
+              }
+
+        },
+        // 4.4 监听录音自动停止
+        onVoiceRecordEnd:{
+            complete: function (res) {
+              voice.localId = res.localId;
+              alert('录音时间已超过一分钟');
+            }
+        },
+        // 4.5 播放音频
+        playVoice:{
+              localId: voice.localId
+        },
+        // 4.6 暂停播放音频
+        pauseVoice:{
+              localId: voice.localId
+        },
+        stopVoice:{
+              localId: voice.localId
+        },
+        // 4.8 监听录音播放停止
+        onVoicePlayEnd:{
+            complete: function (res) {
+              alert('录音（' + res.localId + '）播放结束');
+            }
+        },
+        // 4.8 上传语音
+        uploadVoice:{
+              localId: voice.localId,
+              success: function (res) {
+                alert('上传语音成功，serverId 为' + res.serverId);
+                voice.serverId = res.serverId;
+              }
+        },
+        // 4.9 下载语音
+        downloadVoice:{
+              serverId: voice.serverId,
+              success: function (res) {
+                alert('下载语音成功，localId 为' + res.localId);
+                voice.localId = res.localId;
+              }
+        },
+       // 5 图片接口
+        // 5.1 拍照、本地选图
+        chooseImage:{
+              success: function (res) {
+                images.localId = res.localIds;
+                alert('已选择 ' + res.localIds.length + ' 张图片');
+              }
+        },
+       // 5.2 图片预览
+        previewImage:{
+          current: 'http://img5.douban.com/view/photo/photo/public/p1353993776.jpg',
+          urls: [
+            'http://img3.douban.com/view/photo/photo/public/p2152117150.jpg',
+            'http://img5.douban.com/view/photo/photo/public/p1353993776.jpg',
+            'http://img3.douban.com/view/photo/photo/public/p2152134700.jpg'
+          ]
+        },
+       // 5.3 上传图片
+       // 递归
+        uploadImage:{
+            localId: images.localId[0],
+            isShowProgressTips: 1,
+            success: function (res) {
+              alert('已上传：' + i + '/' + length);
+              images.serverId.push(res.serverId);
+            },
+            fail: function (res) {
+              alert(JSON.stringify(res));
+            }
+        },
+       // 5.4 下载图片
+       // 递归
+        downloadImage:{
+            serverId: images.serverId[0],
+            success: function (res) {
+              i++;
+              length = images.serverId.length;
+              alert('已下载：',res.localId);
+              images.localId.push(res.localId);
+            }
+        },
+        // 6 设备信息接口
+        // 6.1 获取当前网络状态
+        getNetworkType:{
+              success: function (res) {
+                alert(res.networkType);
+              },
+              fail: function (res) {
+                alert(JSON.stringify(res));
+              }
+        },
+        // 7 地理位置接口
+        // 7.1 查看地理位置
+        openLocation:{
+              latitude: 23.099994,
+              longitude: 113.324520,
+              name: 'TIT 创意园',
+              address: '广州市海珠区新港中路 397 号',
+              scale: 14,
+              infoUrl: 'http://weixin.qq.com'
+        },
+      // 7.2 获取当前地理位置
+        getLocation:{
+              success: function (res) {
+                alert(JSON.stringify(res));
+              },
+              cancel: function (res) {
+                alert('用户拒绝授权获取地理位置');
+              }
+        },
+        // 8 界面操作接口
+        // 8.1 隐藏右上角菜单
+        hideOptionMenu:{},
+
+        // 8.2 显示右上角菜单
+        showOptionMenu:{},
+
+        // 8.3 批量隐藏菜单项
+        hideMenuItems:{
+              menuList: [
+                'menuItem:readMode', // 阅读模式
+                'menuItem:share:timeline', // 分享到朋友圈
+                'menuItem:copyUrl' // 复制链接
+              ],
+              success: function (res) {
+                alert('已隐藏“阅读模式”，“分享到朋友圈”，“复制链接”等按钮');
+              },
+              fail: function (res) {
+                alert(JSON.stringify(res));
+              }
+        },
+        // 8.4 批量显示菜单项
+        showMenuItems:{
+              menuList: [
+                'menuItem:readMode', // 阅读模式
+                'menuItem:share:timeline', // 分享到朋友圈
+                'menuItem:copyUrl' // 复制链接
+              ],
+              success: function (res) {
+                alert('已显示“阅读模式”，“分享到朋友圈”，“复制链接”等按钮');
+              },
+              fail: function (res) {
+                alert(JSON.stringify(res));
+              }
+        },
+        hideAllNonBaseMenuItem:{
+              success: function () {
+                alert('已隐藏所有非基本菜单项');
+              }
+        },
+
+        showAllNonBaseMenuItem:{
+          success: function () {
+            alert('已显示所有非基本菜单项');
+          }
+        },
+
+        scanQRCode:{
+          needResult: 1,
+          desc: 'scanQRCode desc',
+          success: function (res) {
+            alert(JSON.stringify(res));
+          }
+        },
+        chooseWXPay:{
+              timestamp: 1414723227,
+              nonceStr: 'noncestr',
+              package: 'addition=action_id%3dgaby1234%26limit_pay%3d&bank_type=WX&body=innertest&fee_type=1&input_charset=GBK&notify_url=http%3A%2F%2F120.204.206.246%2Fcgi-bin%2Fmmsupport-bin%2Fnotifypay&out_trade_no=1414723227818375338&partner=1900000109&spbill_create_ip=127.0.0.1&total_fee=1&sign=432B647FE95C7BF73BCD177CEECBEF8D',
+              signType: 'SHA1', // 注意：新版支付接口使用 MD5 加密
+              paySign: 'bd5b1933cda6e9548862944836a9b52e8c9a2b69'
+        },
+
+        openProductSpecificView:{
+              productId: 'pDF3iY_m2M7EQ5EKKKWd95kAxfNw',
+              extInfo: '123'
+        },
+        addCard:{
+              cardList: [
+                {
+                  cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
+                  cardExt: '{"code": "", "openid": "", "timestamp": "1418301401", "signature":"f6628bf94d8e56d56bfa6598e798d5bad54892e5"}'
+                },
+                {
+                  cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
+                  cardExt: '{"code": "", "openid": "", "timestamp": "1418301401", "signature":"f6628bf94d8e56d56bfa6598e798d5bad54892e5"}'
+                }
+              ],
+              success: function (res) {
+                alert('已添加卡券：' + JSON.stringify(res.cardList));
+              },
+              cancel: function (res) {
+                alert(JSON.stringify(res))
+              }
+        },
+        chooseCard:{
+          cardSign: '1fdb2640c60e41f8823e9f762e70c531d161ae76',
+          timestamp: 1437997723,
+          nonceStr: 'k0hGdSXKZEj3Min5',
+          success: function (res) {
+            res.cardList = JSON.parse(res.cardList);
+            encrypt_code = res.cardList[0]['encrypt_code'];
+            alert('已选择卡券：' + JSON.stringify(res.cardList));
+            decryptCode(encrypt_code);
+
+          },
+          cancel: function (res) {
+            alert(JSON.stringify(res))
+          }
+        },
+        openCard:{
+            cardList: window.cardList,
+              cancel: function (res) {
+                alert(JSON.stringify(res))
+              }
+        },
+
+
+
+
 }
 
 
 
 
-
-translateVoice=function () {
-        if (voice.localId == '') {
-          alert('请先使用 startRecord 接口录制一段声音');
-          return;
-        }
-        wx.translateVoice({
-          localId: voice.localId,
-          complete: function (res) {
-            if (res.hasOwnProperty('translateResult')) {
-              alert('识别结果：' + res.translateResult);
-            } else {
-              alert('无法识别');
-            }
-          }
-        });
-     }
 
 
 
