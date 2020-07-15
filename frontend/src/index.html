@@ -17,13 +17,34 @@
     </van-row>
 
 
-    <van-row >
-        <p>{{config}}<p>
-    </van-row >
+    <van-row>
+        <van-divider dashed>
+            <a href="https://www.weixinsxy.com/jssdk/
+        ">demo</a>
+        </van-divider>
+
+        <van-divider>
+            <a href="https://www.weixinsxy.com/jssdk/js/demo.js">js</a>
+        </van-divider>
+    </van-row>
+
+     
+
+
+
+
 
 
     <van-row >
+
+        <van-divider>
+            <a href="https://mp.weixin.qq.com/debug/cgi-bin/sandbox?t=jsapisign ">jsapisign</a>
+        </van-divider>
+
+
         <p>
+
+
           签名生成规则如下：
 
             参与签名的字段包括有效的 jsapi_ticket（获取方式详见微信 JSSDK 文档）， noncestr （随机字符串，由开发者随机生成），timestamp （由开发者生成的当前时间戳）， url（当前网页的URL，不包含#及其后面部分。注意：对于没有只有域名没有 path 的 URL ，浏览器会自动加上 / 作为 path，如打开 http://qq.com 则获取到的 URL 为 http://qq.com/）。
@@ -33,6 +54,9 @@
         </p>
    </van-row >
 
+    <van-row >
+        <p>{{config}}<p>
+    </van-row >
 
 
     <van-row >
