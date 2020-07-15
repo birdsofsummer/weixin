@@ -37,7 +37,7 @@ type Raw struct {
 	JsapiTicket string `json:"jsapi_ticket"`
 //	Signature   string `json:"signature"`   
 	URL         string `xorm:"Text" json:"url"`        //很长
-//	RawString   string `json:"rawString"`   
+//	RawString   string `xorm:"Text" json:"rawString"`  //很长
 	Timestamp   int64  `json:"timestamp"`   
 	ExpiresIn   int64  `json:"expires_in"`  
 }

@@ -147,15 +147,17 @@ https://gobook.io/read/gitea.com/xorm/manual-en-US/chapter-02/1.mapping.html
 ```
 
 ```go
-type Raw struct {
-	Token       string `json:"token"`       
+
+type TopLevel struct {
 	AppID       string `json:"appId"`       
 	NonceStr    string `json:"nonceStr"`    
 	JsapiTicket string `json:"jsapi_ticket"`
-//	Signature   string `json:"signature"`   
-	URL         string `xorm:"Text" json:"url"`        
-//	RawString   string `json:"rawString"`   
+	Signature   string `json:"signature"`   
+	URL         string `xorm:"Text" json:"url"`         //很长
+	RawString   string `xorm:"Text" json:"rawString"`   //很长
 	Timestamp   int64  `json:"timestamp"`   
 	ExpiresIn   int64  `json:"expires_in"`  
+	Token       string `json:"token"`       
 }
+
 ```
