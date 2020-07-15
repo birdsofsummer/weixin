@@ -24,3 +24,9 @@ type TopLevel struct {
 	Ticket    string `json:"ticket"`    
 	ExpiresIn int64  `json:"expires_in"`
 }
+
+type Ticket struct {
+	AccessToken string `json:"access_token"`
+	Ticket    string `json:"ticket"`    
+	ExpiresIn int64  `json:"expires_in"`
+}

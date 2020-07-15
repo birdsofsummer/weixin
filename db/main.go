@@ -9,6 +9,7 @@ import (
 	"time"
 	"fmt"
 	"../types/jssdk"
+	"../types/ticket"
 )
 
 
@@ -44,6 +45,9 @@ func Conn(s string)(error, *xorm.EngineGroup){
 
     t:=new(Token)
 	j:=new(jssdk.TopLevel)
+	ti:=new (ticket.Ticket)
+
+
 //	engine.IsTableEmpty(t)
 //	a,e:=engine.IsTableExist(j)
 //	println("exist?",a,e)
@@ -70,6 +74,13 @@ func Conn(s string)(error, *xorm.EngineGroup){
 		println("table jssdk sync fail",err.Error())
 		return err,engine
 	}
+
+	err = engine.Sync2(ti)
+	if err!=nil{
+		println("table ticket sync fail",err.Error())
+		return err,engine
+	}
+
 	println("db connected")
 	return err,engine
 }

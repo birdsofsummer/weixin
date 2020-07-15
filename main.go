@@ -16,6 +16,7 @@ import (
 	config1 "./types/config"
 	jssdk1 "./jssdk"
 	"./types/jssdk"
+	"./types/ticket"
 	. "./scf"
 )
 
@@ -69,6 +70,67 @@ func ListJssdk(u string) Jssdks{
 	}
 	return d
 }
+
+func list_ticket(a string)([]ticket.Ticket,error){
+	var d []ticket.Ticket
+	err := engine.Desc("expires_in").Where("access_token = ? ",a).Where("expires_in > ?", time.Now().Unix()+180).Find(&d)
+	if err!=nil{
+		fmt.Println("ticket list fail",err.Error())
+		return d,err
+	}
+	return d,nil
+}
+
+func remove_invalid_ticket(){
+	var exp []ticket.Ticket
+	a,e:=engine.Where("expires_in < ?", time.Now().Unix()).Delete(exp)
+	if e!=nil {
+		fmt.Println("delete ticket fail",a,e)
+	}else{
+		fmt.Println("delete ticket done!",a,e)
+	}
+}
+
+func remove_ticket(a string){
+	var exp []ticket.Ticket
+	affected,e:=engine.Where("access_token = ?", a).Delete(exp)
+	if e!=nil {
+		fmt.Println("delete ticket fail",affected,e)
+	}else{
+		fmt.Println("delete ticket done!",affected,e)
+	}
+}
+
+func add_ticket(d *ticket.Ticket) (int64,error){
+	affected, err := engine.Insert(d)
+	if err!=nil{
+		println("ticket add fail",err.Error())
+	}else{
+		println("ticket add success")
+	}
+	println(affected, err)
+	return affected, err
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -169,15 +231,44 @@ func weixin_token()(error,db.Token){
 }
 
 
+func refresh_ticket (a string) (ticket.Ticket,error){
+	var e error
+	var d []ticket.Ticket
+	var d1 ticket.Ticket
+
+	d,e=list_ticket(a)
+	if e!=nil {
+		fmt.Println("list ticket fail",e)
+	}
+	if len(d) > 0 {
+		d1=d[0]
+		fmt.Println("exist valid ticket",d1)
+		return d1,nil
+	}else{
+		remove_invalid_ticket()
+		remove_ticket(a)
+
+		fmt.Println("fetch a new ticket")
+		n,e:=jssdk1.GetJsApiTicket(a)
+		if e!=nil  {
+			fmt.Println("fetch new ticket fail")
+			return d1,e
+		}else{
+			//if n.Errcode == 
+			d1=ticket.Ticket{
+				AccessToken : a,
+				Ticket : n.Ticket   ,
+				ExpiresIn : n.ExpiresIn + time.Now().Unix(),
+			}
+			fmt.Println("fetch new ticket success")
+			add_ticket(&d1)
+			return d1,nil
+		}
+	}
+}
 
 
 func refresh_jssdk(u string, appid string)(error,jssdk.TopLevel){
-
-	//affected, err := engine.Delete(&tk)
-	//if err!=nil {
-	//	fmt.Println("[db]del fail",tk)
-	//}
-
 	var d jssdk.TopLevel
 	var tk db.Token
 	var e error
@@ -201,28 +292,23 @@ func refresh_jssdk(u string, appid string)(error,jssdk.TopLevel){
 		fmt.Println("delete jssdk done!",a,e)
 	}
 
-
-
-
-/*
-	session := engine.NewSession()
-	defer session.Close()
-	if _, e := session.Exec("delete from jssdk where  expires_in > 0"); e != nil {
+	ti,err:=refresh_ticket(tk.AccessToken)
+	if err!=nil {
+		fmt.Println("refresh ticket fail")
 		return e,d
 	}
-	fmt.Println("del jssdk sucess",d)
-*/
-	d,e=jssdk1.Sign(tk.AccessToken,u,appid)
+	d,e=jssdk1.Sign1(tk.AccessToken,u,appid,ti)
+	//d,e=jssdk1.Sign(tk.AccessToken,u,appid)
 
 	if e!=nil {
 		return e,d
 	}
-	fmt.Println("save new ticket ",tk)
+	fmt.Println("save new jssdk ",d)
 	n,e:=AddJssdk(&d)
 	if e!=nil {
 		return e,d
 	}
-	fmt.Println("save new ticket done",n)
+	fmt.Println("save new jssdk done",n)
 	return e,d
 }
 

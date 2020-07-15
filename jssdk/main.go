@@ -53,7 +53,7 @@ func _sha1(s string) (string){
 }
 
 
-func getJsApiTicket(accessToken string) (ticket.TopLevel,error){
+func GetJsApiTicket(accessToken string) (ticket.TopLevel,error){
    u:="https://api.weixin.qq.com/cgi-bin/ticket/getticket"
    d:=map[string]interface{}{
 	   "type":"jsapi",
@@ -85,11 +85,13 @@ func getSignPackage(r *jssdk1.Raw) (jssdk1.TopLevel,error){
 	return o,nil
 }
 
+
+
 func Sign(token string,u string, appid string)(jssdk1.TopLevel,error){
 	fmt.Println("sign with token",token)
 	var r jssdk1.Raw
 	var o jssdk1.TopLevel
-    t,e:=getJsApiTicket(token)
+    t,e:=GetJsApiTicket(token)
 	if e!=nil {
 	    fmt.Println("ticket fail",e)
 		return o,e
@@ -106,6 +108,23 @@ func Sign(token string,u string, appid string)(jssdk1.TopLevel,error){
 	}
 	return getSignPackage(&r)
 }
+
+func Sign1(token string,u string, appid string,t ticket.Ticket) (jssdk1.TopLevel,error){
+	fmt.Println("sign with old ticket",t)
+	var r jssdk1.Raw
+	r= jssdk1.Raw {
+		Token        : token,
+		AppID        : appid,
+		Timestamp    : now(),
+		ExpiresIn    : t.ExpiresIn,
+		JsapiTicket  :  t.Ticket,
+		NonceStr     : createNonceStr(16),
+		URL          : u,
+	}
+	return getSignPackage(&r)
+}
+
+
 
 
 func main() {
