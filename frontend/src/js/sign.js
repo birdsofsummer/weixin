@@ -61,7 +61,7 @@ sign1=(jsapi_ticket,url,)=>{
   var ret = {
     nonceStr: createNonceStr(),
     timestamp: createTimestamp(),
-    url: url
+    url: url,
     jsapi_ticket: jsapi_ticket,
   };
   return sign(ret)

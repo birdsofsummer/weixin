@@ -171,7 +171,7 @@ vcomponents=[
 ]
 
 
-get=(u)=>fetch(u).then(x=>x.json())
+get=(u,d={})=>axios.get(u,d).then(x=>x.data)
 
 wx.ready(function(e){
     console.log('rrrrrrr',e)
@@ -180,18 +180,40 @@ wx.error(function(res){
     console.log('111111',res)
 });
 
+now=()=>Math.ceil(moment.now()/1e3)
 
-init=async()=>{
+init_weixin=(o={})=>{
+        let o1={
+          ...o,
+          debug: true,
+          jsApiList,
+        }
+        wx.config(o1)
+}
+
+get_config=async ()=>{
     let u="https://service-qsqxa5fo-1252957949.gz.apigw.tencentcs.com/release/weixin-token/jssdk"
     let o=await get(u)
+    window.config=o
     localStorage.config=JSON.stringify(o)
-    let o1={
-      ...o,
-      debug: true,
-      jsApiList,
-    }
-    wx.config(o1)
+    init_weixin(o)
     return o
+}
+
+init=async()=>{
+    if (localStorage.config) {
+        let c=JSON.parse(localStorage.config)
+        let valid = (c.expires_in-now()>10) && (location.href==c.url) //微信每次都会改写url，每次都不一样
+        if (valid) {
+            window.config=c
+            init_weixin(c)
+            return c
+        }else{
+            return get_config()
+        }
+    }else{
+        return get_config()
+    }
 }
 
 
