@@ -5,14 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>weixin jssdk demo</title>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vant@2.9/lib/index.css" />
+  <style type="text/css" media="all">
+        .van-button {
+            width: 300px;
+        }
+  </style>
 </head>
 <body>
 
  <section id="app">
 
-    <van-row >
-          <van-col span="6" v-for="(v,i) in jsApiList">
-              <van-button @click="say(v)" :type="buttons[i%5]" >{{v}} </van-button>
+    <van-row type="flex" justify="center"  v-for="(v,i) in jsApiList">
+          <van-col span="20" >
+              <van-button @click="say(v)" :type="buttons[i%5]" >{{api_name[v]||v}} </van-button>
           </van-col>
     </van-row>
 
