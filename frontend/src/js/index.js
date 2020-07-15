@@ -465,7 +465,7 @@ app= new Vue({
                   'expires_in',
                   'token',
             ],
-            events,
+            //events,
             jsApiList,
             api_name,
             buttons:[
