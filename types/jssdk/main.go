@@ -23,8 +23,8 @@ type TopLevel struct {
 	NonceStr    string `json:"nonceStr"`    
 	JsapiTicket string `json:"jsapi_ticket"`
 	Signature   string `json:"signature"`   
-	URL         string `json:"url"`         
-	RawString   string `json:"rawString"`   
+	URL         string `xorm:"Text" json:"url"`         //很长
+	RawString   string `xorm:"Text" json:"rawString"`   //很长
 	Timestamp   int64  `json:"timestamp"`   
 	ExpiresIn   int64  `json:"expires_in"`  
 	Token       string `json:"token"`       
@@ -36,7 +36,7 @@ type Raw struct {
 	NonceStr    string `json:"nonceStr"`    
 	JsapiTicket string `json:"jsapi_ticket"`
 //	Signature   string `json:"signature"`   
-	URL         string `json:"url"`         
+	URL         string `xorm:"Text" json:"url"`        //很长
 //	RawString   string `json:"rawString"`   
 	Timestamp   int64  `json:"timestamp"`   
 	ExpiresIn   int64  `json:"expires_in"`  

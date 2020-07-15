@@ -7,6 +7,7 @@ import (
     "context"
 	//"encoding/json"
 	"time"
+	//"net/url"
 	. "github.com/tencentyun/scf-go-lib/cloudevents/scf"
     "github.com/tencentyun/scf-go-lib/cloudfunction"
 	"./token"
@@ -110,7 +111,7 @@ func refresh_save() (error,db.Token){
 	if _, e := session.Exec("delete from token where  expires_in > 0"); e != nil {
 		return e,tk
 	}
-	fmt.Println("[db]del sucess",tk)
+	fmt.Println("del old token sucess",tk)
 
 	e,tk=refresh_token()
 	if e!=nil {
@@ -187,9 +188,20 @@ func refresh_jssdk(u string, appid string)(error,jssdk.TopLevel){
 		return e,d
 	}
 
-	fmt.Println("zzzzzzzzz",tk)
+	fmt.Println("get token success",tk)
 	t,_:=tk.Marshal()
 	fmt.Println("token string",string(t))
+
+
+    var exp []jssdk.TopLevel
+	a,e:=engine.Where("expires_in < ?", time.Now().Unix()).Delete(exp)
+	if e!=nil {
+		fmt.Println("delete jssdk fail",a,e)
+	}else{
+		fmt.Println("delete jssdk done!",a,e)
+	}
+
+
 
 
 /*
@@ -270,8 +282,8 @@ func test3(){
 	init_db()
 	appid:=Config.Appid
 
-
-	u:="https://www.baidu.com"  /////event
+    u:="https://weixin-1252957949.cos-website.ap-guangzhou.myqcloud.com/?nsukey=xlGATjrnQusW%2B3HtcxkteNG%2BN2Id0YHuSGCVMjzDGkk%2F2%2Fb5vU%2FwPZSw5olrS2WHTiftdhOUtQqqaah0nUhhOcXAN92gl6Qo3hwNa9WlINej8VvdTvujiK1UXXEAjcSbgfuoePk6sNG%2Bewz%2FlbahXnwI6jEPLkgckS0%2BsU5C8gz2ONOrMKezteGGXRWHOPWk06E5JRYmdSan8s260Bh6gg%3D%3D"
+	//u:="https://www.baidu.com"  /////event
     e,d:=get_jssdk(u,appid)
 	if e!=nil {
 		fmt.Println("111 jssdk fail",e)
@@ -319,6 +331,11 @@ headers:{
 event.Headers["origin"]
 event.Headers["referer"]
 
+"https://tieba.baidu.com/?x=1&y=2#123" 
+这种需要去掉#123
+
+直接取浏览器的refer会自动丢弃#123
+
 */
 
 func Jssdk(ctx context.Context, event APIGatewayProxyRequest) (string,error) {
@@ -332,11 +349,12 @@ func Jssdk(ctx context.Context, event APIGatewayProxyRequest) (string,error) {
 //		u=event.Headers["origin"]
 //	}
 
+
+
 	_,ok:=event.Headers["referer"]	
 	if ok {
 		u=event.Headers["referer"]
 	}
-
 
     e,d:=get_jssdk(u,appid)
 	if e!=nil {

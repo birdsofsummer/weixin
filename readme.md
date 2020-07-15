@@ -111,6 +111,9 @@ sls --debug
 
 ### 已知问题
 
+
++ 数据库需要关闭ssl
+
 ```
 db sync fail pq: SSL is not enabled on the server
 eeee pq: SSL is not enabled on the server
@@ -121,3 +124,38 @@ eeee pq: SSL is not enabled on the server
 server = "postgresql://xxx:xxxx@postgres-xxxx.sql.tencentcdb.com:8224/xxxxx?sslmode=disable"
 ```
 
+
++  如果不是常见域名，微信会改写url,变得特别长
+
+```
+referer: https://weixin-1252957949.cos-website.ap-guangzhou.myqcloud.com/?nsukey=TFacnjZgZUc2NyLkqaHYiVsJeeSFHsal3cgENWhxneMPRptMiNnsGGr%2BJKQM2hLiAQJQfTkIufWIlW2auWQfF5YJGAS4w8V%2FVDV8fV1AP59qkpjybInsLGvjS0fUkFr9LKCr92Om1gTSd4blRbVraVuPx9hPMtZGpwadPDZMzyGku4VPDEVPB5jZTV7cWajETMKG1ENJ5J3vMZ%2FJYL1%2F5w%3D%3D
+
+这种太长的会查询保存失败
+因为默认类型是character varying(255)
+
+jssdk fail pq: value too long for type character varying(255)
+jssdk list fail pq: column "url" does not exist
+
+
+https://gobook.io/read/gitea.com/xorm/manual-en-US/chapter-02/1.mapping.html
+
+类型要改一下
+
+`xorm:"varchar(4000)"`
+`xorm:"Text"`
+
+```
+
+```go
+type Raw struct {
+	Token       string `json:"token"`       
+	AppID       string `json:"appId"`       
+	NonceStr    string `json:"nonceStr"`    
+	JsapiTicket string `json:"jsapi_ticket"`
+//	Signature   string `json:"signature"`   
+	URL         string `xorm:"Text" json:"url"`        
+//	RawString   string `json:"rawString"`   
+	Timestamp   int64  `json:"timestamp"`   
+	ExpiresIn   int64  `json:"expires_in"`  
+}
+```

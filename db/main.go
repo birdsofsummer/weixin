@@ -53,6 +53,12 @@ func Conn(s string)(error, *xorm.EngineGroup){
 //	}
 //	engine.DropTables(t)
 
+//	err=engine.DropTables(j)
+//	if err!=nil{
+//		println("drop jssdk fail",err.Error())
+//	}
+
+
 	err = engine.Sync2(t)
 	if err!=nil{
 		println("table token sync fail",err.Error())
