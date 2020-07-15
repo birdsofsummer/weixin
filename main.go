@@ -435,16 +435,17 @@ func Jssdk(ctx context.Context, event APIGatewayProxyRequest) (string,error) {
 //		u=event.Headers["origin"]
 //	}
 
-
-
 	_,ok:=event.Headers["referer"]	
 	if ok {
 		u=event.Headers["referer"]
 	}
+	
+	fmt.Println("url:",u)
 
     e,d:=get_jssdk(u,appid)
+
 	if e!=nil {
-		fmt.Println("111 jssdk fail",e)
+		fmt.Println("get jssdk fail",e)
 		return "",e
 	}
 	fmt.Println("zzz",d)
